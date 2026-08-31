@@ -1,0 +1,66 @@
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpStatus,
+} from '@nestjs/common';
+import { Response } from 'express';
+import { Prisma } from '../../generated/prisma/client';
+
+@Catch(Prisma.PrismaClientKnownRequestError)
+export class PrismaExceptionFilter implements ExceptionFilter {
+  catch(
+    exception: Prisma.PrismaClientKnownRequestError,
+    host: ArgumentsHost,
+  ): void {
+    const response = host.switchToHttp().getResponse<Response>();
+    const { status, message } = this.toHttpError(exception);
+
+    response.status(status).json({
+      statusCode: status,
+      message,
+      error: this.errorName(status),
+    });
+  }
+
+  private toHttpError(exception: Prisma.PrismaClientKnownRequestError): {
+    status: HttpStatus;
+    message: string;
+  } {
+    if (exception.code === 'P2002') {
+      return {
+        status: HttpStatus.CONFLICT,
+        message: 'A product with this title already exists',
+      };
+    }
+
+    if (exception.code === 'P2025') {
+      return {
+        status: HttpStatus.NOT_FOUND,
+        message: 'The requested record was not found',
+      };
+    }
+
+    if (exception.code === 'P2003') {
+      return {
+        status: HttpStatus.CONFLICT,
+        message: 'The request conflicts with related data',
+      };
+    }
+
+    return {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      message: 'A database error occurred',
+    };
+  }
+
+  private errorName(status: HttpStatus): string {
+    const names: Partial<Record<HttpStatus, string>> = {
+      [HttpStatus.CONFLICT]: 'Conflict',
+      [HttpStatus.NOT_FOUND]: 'Not Found',
+      [HttpStatus.INTERNAL_SERVER_ERROR]: 'Internal Server Error',
+    };
+
+    return names[status] ?? 'Error';
+  }
+}
