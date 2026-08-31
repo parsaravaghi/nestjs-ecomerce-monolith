@@ -23,12 +23,13 @@ export interface ProductPage {
 export class ProductService {
   constructor(private readonly prisma: PrismaService) {}
 
-  createProduct(dto: CreateProductDto) {
+  createProduct(dto: CreateProductDto, userId: string) {
     return this.prisma.product.create({
       data: {
         title: dto.title,
         price: new Prisma.Decimal(dto.price),
         description: dto.description,
+        userId: userId,
       },
     });
   }

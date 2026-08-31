@@ -28,6 +28,22 @@ export class PrismaExceptionFilter implements ExceptionFilter {
     message: string;
   } {
     if (exception.code === 'P2002') {
+      const fields = this.uniqueFields(exception);
+
+      if (fields.includes('username')) {
+        return {
+          status: HttpStatus.CONFLICT,
+          message: 'Username already exists',
+        };
+      }
+
+      if (fields.includes('email')) {
+        return {
+          status: HttpStatus.CONFLICT,
+          message: 'Email already exists',
+        };
+      }
+
       return {
         status: HttpStatus.CONFLICT,
         message: 'A product with this title already exists',
@@ -43,8 +59,8 @@ export class PrismaExceptionFilter implements ExceptionFilter {
 
     if (exception.code === 'P2003') {
       return {
-        status: HttpStatus.CONFLICT,
-        message: 'The request conflicts with related data',
+        status: HttpStatus.NOT_FOUND,
+        message: 'User not found',
       };
     }
 
@@ -52,6 +68,44 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       status: HttpStatus.INTERNAL_SERVER_ERROR,
       message: 'A database error occurred',
     };
+  }
+
+  private uniqueFields(
+    exception: Prisma.PrismaClientKnownRequestError,
+  ): string[] {
+    const target = exception.meta?.target;
+
+    if (Array.isArray(target)) {
+      return target.filter(
+        (field): field is string => typeof field === 'string',
+      );
+    }
+
+    if (typeof target === 'string') {
+      return [target];
+    }
+
+    const adapterError = exception.meta?.driverAdapterError;
+
+    if (!this.isRecord(adapterError) || !this.isRecord(adapterError.cause)) {
+      return [];
+    }
+
+    const constraint = adapterError.cause.constraint;
+
+    if (!this.isRecord(constraint) || typeof constraint.index !== 'string') {
+      return [];
+    }
+
+    const constraintIndex = constraint.index;
+
+    return ['username', 'email', 'title'].filter((field) =>
+      constraintIndex.endsWith(`_${field}_key`),
+    );
+  }
+
+  private isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null;
   }
 
   private errorName(status: HttpStatus): string {

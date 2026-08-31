@@ -8,22 +8,27 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { ProductQueryDto } from './dtos/product-query.dto';
 import { ProductUpdateDto } from './dtos/product-update.dto';
 import { ProductService } from './product.service';
+import { User } from 'src/common/decorators/user.decorator';
+import { type AuthUser } from '../auth/auth-user.interface';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
 @Controller()
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post('products')
-  createProduct(@Body() dto: CreateProductDto) {
-    return this.productService.createProduct(dto);
+  @UseGuards(AuthGuard)
+  createProduct(@Body() dto: CreateProductDto, @User() user: AuthUser) {
+    return this.productService.createProduct(dto, user.sub);
   }
 
-  @Get('product')
+  @Get('products')
   findAll(@Query() query: ProductQueryDto) {
     return this.productService.findAll(query);
   }
@@ -35,7 +40,7 @@ export class ProductController {
     return this.productService.findOne(productId);
   }
 
-  @Put('product/:productId')
+  @Put('products/:productId')
   update(
     @Param('productId', new ParseUUIDPipe({ version: '4' })) productId: string,
     @Body() dto: ProductUpdateDto,
@@ -43,7 +48,7 @@ export class ProductController {
     return this.productService.update(productId, dto);
   }
 
-  @Delete('product/:productId')
+  @Delete('products/:productId')
   remove(
     @Param('productId', new ParseUUIDPipe({ version: '4' })) productId: string,
   ) {

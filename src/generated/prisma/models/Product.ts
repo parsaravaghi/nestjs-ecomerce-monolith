@@ -41,6 +41,7 @@ export type ProductMinAggregateOutputType = {
   description: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+  userId: string | null;
 };
 
 export type ProductMaxAggregateOutputType = {
@@ -50,6 +51,7 @@ export type ProductMaxAggregateOutputType = {
   description: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+  userId: string | null;
 };
 
 export type ProductCountAggregateOutputType = {
@@ -59,6 +61,7 @@ export type ProductCountAggregateOutputType = {
   description: number;
   createdAt: number;
   updatedAt: number;
+  userId: number;
   _all: number;
 };
 
@@ -77,6 +80,7 @@ export type ProductMinAggregateInputType = {
   description?: true;
   createdAt?: true;
   updatedAt?: true;
+  userId?: true;
 };
 
 export type ProductMaxAggregateInputType = {
@@ -86,6 +90,7 @@ export type ProductMaxAggregateInputType = {
   description?: true;
   createdAt?: true;
   updatedAt?: true;
+  userId?: true;
 };
 
 export type ProductCountAggregateInputType = {
@@ -95,6 +100,7 @@ export type ProductCountAggregateInputType = {
   description?: true;
   createdAt?: true;
   updatedAt?: true;
+  userId?: true;
   _all?: true;
 };
 
@@ -198,6 +204,7 @@ export type ProductGroupByOutputType = {
   description: string;
   createdAt: Date;
   updatedAt: Date;
+  userId: string | null;
   _count: ProductCountAggregateOutputType | null;
   _avg: ProductAvgAggregateOutputType | null;
   _sum: ProductSumAggregateOutputType | null;
@@ -233,6 +240,11 @@ export type ProductWhereInput = {
   description?: Prisma.StringFilter<'Product'> | string;
   createdAt?: Prisma.DateTimeFilter<'Product'> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<'Product'> | Date | string;
+  userId?: Prisma.UuidNullableFilter<'Product'> | string | null;
+  user?: Prisma.XOR<
+    Prisma.UserNullableScalarRelationFilter,
+    Prisma.UserWhereInput
+  > | null;
 };
 
 export type ProductOrderByWithRelationInput = {
@@ -242,6 +254,8 @@ export type ProductOrderByWithRelationInput = {
   description?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder;
+  user?: Prisma.UserOrderByWithRelationInput;
 };
 
 export type ProductWhereUniqueInput = Prisma.AtLeast<
@@ -260,6 +274,11 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<
     description?: Prisma.StringFilter<'Product'> | string;
     createdAt?: Prisma.DateTimeFilter<'Product'> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<'Product'> | Date | string;
+    userId?: Prisma.UuidNullableFilter<'Product'> | string | null;
+    user?: Prisma.XOR<
+      Prisma.UserNullableScalarRelationFilter,
+      Prisma.UserWhereInput
+    > | null;
   },
   'id' | 'title'
 >;
@@ -271,6 +290,7 @@ export type ProductOrderByWithAggregationInput = {
   description?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder;
   _count?: Prisma.ProductCountOrderByAggregateInput;
   _avg?: Prisma.ProductAvgOrderByAggregateInput;
   _max?: Prisma.ProductMaxOrderByAggregateInput;
@@ -297,6 +317,7 @@ export type ProductScalarWhereWithAggregatesInput = {
   description?: Prisma.StringWithAggregatesFilter<'Product'> | string;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<'Product'> | Date | string;
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<'Product'> | Date | string;
+  userId?: Prisma.UuidNullableWithAggregatesFilter<'Product'> | string | null;
 };
 
 export type ProductCreateInput = {
@@ -306,6 +327,7 @@ export type ProductCreateInput = {
   description: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  user?: Prisma.UserCreateNestedOneWithoutProductsInput;
 };
 
 export type ProductUncheckedCreateInput = {
@@ -315,6 +337,7 @@ export type ProductUncheckedCreateInput = {
   description: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  userId?: string | null;
 };
 
 export type ProductUpdateInput = {
@@ -329,6 +352,7 @@ export type ProductUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  user?: Prisma.UserUpdateOneWithoutProductsNestedInput;
 };
 
 export type ProductUncheckedUpdateInput = {
@@ -343,6 +367,7 @@ export type ProductUncheckedUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 
 export type ProductCreateManyInput = {
@@ -352,6 +377,7 @@ export type ProductCreateManyInput = {
   description: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  userId?: string | null;
 };
 
 export type ProductUpdateManyMutationInput = {
@@ -380,6 +406,7 @@ export type ProductUncheckedUpdateManyInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 
 export type ProductCountOrderByAggregateInput = {
@@ -389,6 +416,7 @@ export type ProductCountOrderByAggregateInput = {
   description?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  userId?: Prisma.SortOrder;
 };
 
 export type ProductAvgOrderByAggregateInput = {
@@ -402,6 +430,7 @@ export type ProductMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  userId?: Prisma.SortOrder;
 };
 
 export type ProductMinOrderByAggregateInput = {
@@ -411,10 +440,21 @@ export type ProductMinOrderByAggregateInput = {
   description?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  userId?: Prisma.SortOrder;
 };
 
 export type ProductSumOrderByAggregateInput = {
   price?: Prisma.SortOrder;
+};
+
+export type ProductListRelationFilter = {
+  every?: Prisma.ProductWhereInput;
+  some?: Prisma.ProductWhereInput;
+  none?: Prisma.ProductWhereInput;
+};
+
+export type ProductOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder;
 };
 
 export type StringFieldUpdateOperationsInput = {
@@ -433,6 +473,228 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string;
 };
 
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null;
+};
+
+export type ProductCreateNestedManyWithoutUserInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.ProductCreateWithoutUserInput,
+        Prisma.ProductUncheckedCreateWithoutUserInput
+      >
+    | Prisma.ProductCreateWithoutUserInput[]
+    | Prisma.ProductUncheckedCreateWithoutUserInput[];
+  connectOrCreate?:
+    | Prisma.ProductCreateOrConnectWithoutUserInput
+    | Prisma.ProductCreateOrConnectWithoutUserInput[];
+  createMany?: Prisma.ProductCreateManyUserInputEnvelope;
+  connect?: Prisma.ProductWhereUniqueInput | Prisma.ProductWhereUniqueInput[];
+};
+
+export type ProductUncheckedCreateNestedManyWithoutUserInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.ProductCreateWithoutUserInput,
+        Prisma.ProductUncheckedCreateWithoutUserInput
+      >
+    | Prisma.ProductCreateWithoutUserInput[]
+    | Prisma.ProductUncheckedCreateWithoutUserInput[];
+  connectOrCreate?:
+    | Prisma.ProductCreateOrConnectWithoutUserInput
+    | Prisma.ProductCreateOrConnectWithoutUserInput[];
+  createMany?: Prisma.ProductCreateManyUserInputEnvelope;
+  connect?: Prisma.ProductWhereUniqueInput | Prisma.ProductWhereUniqueInput[];
+};
+
+export type ProductUpdateManyWithoutUserNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.ProductCreateWithoutUserInput,
+        Prisma.ProductUncheckedCreateWithoutUserInput
+      >
+    | Prisma.ProductCreateWithoutUserInput[]
+    | Prisma.ProductUncheckedCreateWithoutUserInput[];
+  connectOrCreate?:
+    | Prisma.ProductCreateOrConnectWithoutUserInput
+    | Prisma.ProductCreateOrConnectWithoutUserInput[];
+  upsert?:
+    | Prisma.ProductUpsertWithWhereUniqueWithoutUserInput
+    | Prisma.ProductUpsertWithWhereUniqueWithoutUserInput[];
+  createMany?: Prisma.ProductCreateManyUserInputEnvelope;
+  set?: Prisma.ProductWhereUniqueInput | Prisma.ProductWhereUniqueInput[];
+  disconnect?:
+    Prisma.ProductWhereUniqueInput | Prisma.ProductWhereUniqueInput[];
+  delete?: Prisma.ProductWhereUniqueInput | Prisma.ProductWhereUniqueInput[];
+  connect?: Prisma.ProductWhereUniqueInput | Prisma.ProductWhereUniqueInput[];
+  update?:
+    | Prisma.ProductUpdateWithWhereUniqueWithoutUserInput
+    | Prisma.ProductUpdateWithWhereUniqueWithoutUserInput[];
+  updateMany?:
+    | Prisma.ProductUpdateManyWithWhereWithoutUserInput
+    | Prisma.ProductUpdateManyWithWhereWithoutUserInput[];
+  deleteMany?:
+    Prisma.ProductScalarWhereInput | Prisma.ProductScalarWhereInput[];
+};
+
+export type ProductUncheckedUpdateManyWithoutUserNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.ProductCreateWithoutUserInput,
+        Prisma.ProductUncheckedCreateWithoutUserInput
+      >
+    | Prisma.ProductCreateWithoutUserInput[]
+    | Prisma.ProductUncheckedCreateWithoutUserInput[];
+  connectOrCreate?:
+    | Prisma.ProductCreateOrConnectWithoutUserInput
+    | Prisma.ProductCreateOrConnectWithoutUserInput[];
+  upsert?:
+    | Prisma.ProductUpsertWithWhereUniqueWithoutUserInput
+    | Prisma.ProductUpsertWithWhereUniqueWithoutUserInput[];
+  createMany?: Prisma.ProductCreateManyUserInputEnvelope;
+  set?: Prisma.ProductWhereUniqueInput | Prisma.ProductWhereUniqueInput[];
+  disconnect?:
+    Prisma.ProductWhereUniqueInput | Prisma.ProductWhereUniqueInput[];
+  delete?: Prisma.ProductWhereUniqueInput | Prisma.ProductWhereUniqueInput[];
+  connect?: Prisma.ProductWhereUniqueInput | Prisma.ProductWhereUniqueInput[];
+  update?:
+    | Prisma.ProductUpdateWithWhereUniqueWithoutUserInput
+    | Prisma.ProductUpdateWithWhereUniqueWithoutUserInput[];
+  updateMany?:
+    | Prisma.ProductUpdateManyWithWhereWithoutUserInput
+    | Prisma.ProductUpdateManyWithWhereWithoutUserInput[];
+  deleteMany?:
+    Prisma.ProductScalarWhereInput | Prisma.ProductScalarWhereInput[];
+};
+
+export type ProductCreateWithoutUserInput = {
+  id?: string;
+  title: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  description: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+};
+
+export type ProductUncheckedCreateWithoutUserInput = {
+  id?: string;
+  title: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  description: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+};
+
+export type ProductCreateOrConnectWithoutUserInput = {
+  where: Prisma.ProductWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.ProductCreateWithoutUserInput,
+    Prisma.ProductUncheckedCreateWithoutUserInput
+  >;
+};
+
+export type ProductCreateManyUserInputEnvelope = {
+  data: Prisma.ProductCreateManyUserInput | Prisma.ProductCreateManyUserInput[];
+  skipDuplicates?: boolean;
+};
+
+export type ProductUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.ProductWhereUniqueInput;
+  update: Prisma.XOR<
+    Prisma.ProductUpdateWithoutUserInput,
+    Prisma.ProductUncheckedUpdateWithoutUserInput
+  >;
+  create: Prisma.XOR<
+    Prisma.ProductCreateWithoutUserInput,
+    Prisma.ProductUncheckedCreateWithoutUserInput
+  >;
+};
+
+export type ProductUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.ProductWhereUniqueInput;
+  data: Prisma.XOR<
+    Prisma.ProductUpdateWithoutUserInput,
+    Prisma.ProductUncheckedUpdateWithoutUserInput
+  >;
+};
+
+export type ProductUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.ProductScalarWhereInput;
+  data: Prisma.XOR<
+    Prisma.ProductUpdateManyMutationInput,
+    Prisma.ProductUncheckedUpdateManyWithoutUserInput
+  >;
+};
+
+export type ProductScalarWhereInput = {
+  AND?: Prisma.ProductScalarWhereInput | Prisma.ProductScalarWhereInput[];
+  OR?: Prisma.ProductScalarWhereInput[];
+  NOT?: Prisma.ProductScalarWhereInput | Prisma.ProductScalarWhereInput[];
+  id?: Prisma.UuidFilter<'Product'> | string;
+  title?: Prisma.StringFilter<'Product'> | string;
+  price?:
+    | Prisma.DecimalFilter<'Product'>
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
+  description?: Prisma.StringFilter<'Product'> | string;
+  createdAt?: Prisma.DateTimeFilter<'Product'> | Date | string;
+  updatedAt?: Prisma.DateTimeFilter<'Product'> | Date | string;
+  userId?: Prisma.UuidNullableFilter<'Product'> | string | null;
+};
+
+export type ProductCreateManyUserInput = {
+  id?: string;
+  title: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  description: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+};
+
+export type ProductUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  title?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
+  description?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+
+export type ProductUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  title?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
+  description?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+
+export type ProductUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  title?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
+  description?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+
 export type ProductSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
@@ -444,6 +706,8 @@ export type ProductSelect<
     description?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    userId?: boolean;
+    user?: boolean | Prisma.Product$userArgs<ExtArgs>;
   },
   ExtArgs['result']['product']
 >;
@@ -459,6 +723,8 @@ export type ProductSelectCreateManyAndReturn<
     description?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    userId?: boolean;
+    user?: boolean | Prisma.Product$userArgs<ExtArgs>;
   },
   ExtArgs['result']['product']
 >;
@@ -474,6 +740,8 @@ export type ProductSelectUpdateManyAndReturn<
     description?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    userId?: boolean;
+    user?: boolean | Prisma.Product$userArgs<ExtArgs>;
   },
   ExtArgs['result']['product']
 >;
@@ -485,22 +753,49 @@ export type ProductSelectScalar = {
   description?: boolean;
   createdAt?: boolean;
   updatedAt?: boolean;
+  userId?: boolean;
 };
 
 export type ProductOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  'id' | 'title' | 'price' | 'description' | 'createdAt' | 'updatedAt',
+  | 'id'
+  | 'title'
+  | 'price'
+  | 'description'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'userId',
   ExtArgs['result']['product']
 >;
+export type ProductInclude<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  user?: boolean | Prisma.Product$userArgs<ExtArgs>;
+};
+export type ProductIncludeCreateManyAndReturn<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  user?: boolean | Prisma.Product$userArgs<ExtArgs>;
+};
+export type ProductIncludeUpdateManyAndReturn<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  user?: boolean | Prisma.Product$userArgs<ExtArgs>;
+};
 
 export type $ProductPayload<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   name: 'Product';
-  objects: {};
+  objects: {
+    user: Prisma.$UserPayload<ExtArgs> | null;
+  };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
       id: string;
@@ -509,6 +804,7 @@ export type $ProductPayload<
       description: string;
       createdAt: Date;
       updatedAt: Date;
+      userId: string | null;
     },
     ExtArgs['result']['product']
   >;
@@ -1059,6 +1355,19 @@ export interface Prisma__ProductClient<
   GlobalOmitOptions = {},
 > extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: 'PrismaPromise';
+  user<T extends Prisma.Product$userArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Product$userArgs<ExtArgs>>,
+  ): Prisma.Prisma__UserClient<
+    runtime.Types.Result.GetResult<
+      Prisma.$UserPayload<ExtArgs>,
+      T,
+      'findUniqueOrThrow',
+      GlobalOmitOptions
+    > | null,
+    null,
+    ExtArgs,
+    GlobalOmitOptions
+  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1101,6 +1410,7 @@ export interface ProductFieldRefs {
   readonly description: Prisma.FieldRef<'Product', 'String'>;
   readonly createdAt: Prisma.FieldRef<'Product', 'DateTime'>;
   readonly updatedAt: Prisma.FieldRef<'Product', 'DateTime'>;
+  readonly userId: Prisma.FieldRef<'Product', 'String'>;
 }
 
 // Custom InputTypes
@@ -1119,6 +1429,10 @@ export type ProductFindUniqueArgs<
    * Omit specific fields from the Product
    */
   omit?: Prisma.ProductOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductInclude<ExtArgs> | null;
   /**
    * Filter, which Product to fetch.
    */
@@ -1141,6 +1455,10 @@ export type ProductFindUniqueOrThrowArgs<
    */
   omit?: Prisma.ProductOmit<ExtArgs> | null;
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductInclude<ExtArgs> | null;
+  /**
    * Filter, which Product to fetch.
    */
   where: Prisma.ProductWhereUniqueInput;
@@ -1161,6 +1479,10 @@ export type ProductFindFirstArgs<
    * Omit specific fields from the Product
    */
   omit?: Prisma.ProductOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductInclude<ExtArgs> | null;
   /**
    * Filter, which Product to fetch.
    */
@@ -1215,6 +1537,10 @@ export type ProductFindFirstOrThrowArgs<
    */
   omit?: Prisma.ProductOmit<ExtArgs> | null;
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductInclude<ExtArgs> | null;
+  /**
    * Filter, which Product to fetch.
    */
   where?: Prisma.ProductWhereInput;
@@ -1267,6 +1593,10 @@ export type ProductFindManyArgs<
    * Omit specific fields from the Product
    */
   omit?: Prisma.ProductOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductInclude<ExtArgs> | null;
   /**
    * Filter, which Products to fetch.
    */
@@ -1321,6 +1651,10 @@ export type ProductCreateArgs<
    */
   omit?: Prisma.ProductOmit<ExtArgs> | null;
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductInclude<ExtArgs> | null;
+  /**
    * The data needed to create a Product.
    */
   data: Prisma.XOR<
@@ -1363,6 +1697,10 @@ export type ProductCreateManyAndReturnArgs<
    */
   data: Prisma.ProductCreateManyInput | Prisma.ProductCreateManyInput[];
   skipDuplicates?: boolean;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductIncludeCreateManyAndReturn<ExtArgs> | null;
 };
 
 /**
@@ -1380,6 +1718,10 @@ export type ProductUpdateArgs<
    * Omit specific fields from the Product
    */
   omit?: Prisma.ProductOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductInclude<ExtArgs> | null;
   /**
    * The data needed to update a Product.
    */
@@ -1447,6 +1789,10 @@ export type ProductUpdateManyAndReturnArgs<
    * Limit how many Products to update.
    */
   limit?: number;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductIncludeUpdateManyAndReturn<ExtArgs> | null;
 };
 
 /**
@@ -1464,6 +1810,10 @@ export type ProductUpsertArgs<
    * Omit specific fields from the Product
    */
   omit?: Prisma.ProductOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductInclude<ExtArgs> | null;
   /**
    * The filter to search for the Product to update in case it exists.
    */
@@ -1500,6 +1850,10 @@ export type ProductDeleteArgs<
    */
   omit?: Prisma.ProductOmit<ExtArgs> | null;
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductInclude<ExtArgs> | null;
+  /**
    * Filter which Product to delete.
    */
   where: Prisma.ProductWhereUniqueInput;
@@ -1523,6 +1877,28 @@ export type ProductDeleteManyArgs<
 };
 
 /**
+ * Product.user
+ */
+export type Product$userArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null;
+  where?: Prisma.UserWhereInput;
+};
+
+/**
  * Product without action
  */
 export type ProductDefaultArgs<
@@ -1537,4 +1913,8 @@ export type ProductDefaultArgs<
    * Omit specific fields from the Product
    */
   omit?: Prisma.ProductOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductInclude<ExtArgs> | null;
 };

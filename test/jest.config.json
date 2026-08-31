@@ -1,0 +1,22 @@
+{
+  "rootDir": "..",
+  "extensionsToTreatAsEsm": [".ts"],
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "moduleNameMapper": {
+    "^src/(.*)$": "<rootDir>/src/$1",
+    "^(\\.{1,2}/.*)\\.js$": "$1"
+  },
+  "testEnvironment": "node",
+  "testRegex": "test/.+\\.(spec|e2e-spec)\\.ts$",
+  "transform": {
+    "^.+\\.ts$": [
+      "ts-jest",
+      {
+        "useESM": true,
+        "tsconfig": "<rootDir>/test/tsconfig.json"
+      }
+    ]
+  },
+  "collectCoverageFrom": ["src/**/*.ts", "!src/generated/**"],
+  "coverageDirectory": "<rootDir>/coverage"
+}
