@@ -1,4 +1,9 @@
 services:
+  redis:
+    image: redis:8-alpine
+    ports:
+      - "6379:6379"
+
   postgres: 
     image: postgres:18-alpine
     ports:

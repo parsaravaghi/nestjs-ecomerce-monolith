@@ -2,6 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { PrismaService } from '../../../src/database/prisma.service';
 import { createTestApp } from '../../helpers/test-app';
+import { UserRole } from '../../../src/generated/prisma/client';
 
 describe('Product user flow (e2e)', () => {
   let app: INestApplication;
@@ -14,7 +15,7 @@ describe('Product user flow (e2e)', () => {
   beforeAll(async () => {
     app = await createTestApp();
     prisma = app.get(PrismaService);
-    await request(app.getHttpServer())
+    const registration = await request(app.getHttpServer())
       .post('/auth/register')
       .send({
         username,
@@ -22,6 +23,10 @@ describe('Product user flow (e2e)', () => {
         password: 'Password123',
       })
       .expect(201);
+    await prisma.user.update({
+      where: { id: registration.body.id as string },
+      data: { role: UserRole.ADMIN },
+    });
     const login = await request(app.getHttpServer())
       .post('/auth/login')
       .send({ username, password: 'Password123' })
@@ -40,6 +45,7 @@ describe('Product user flow (e2e)', () => {
       title,
       price: '49.90',
       description: 'E2E product',
+      quantity: 7,
     };
     await request(app.getHttpServer())
       .post('/products')
@@ -52,7 +58,7 @@ describe('Product user flow (e2e)', () => {
       .send(payload)
       .expect(201);
     expect(creation.body).toEqual(
-      expect.objectContaining({ title, price: '49.9' }),
+      expect.objectContaining({ title, price: '49.9', quantity: 7 }),
     );
 
     await request(app.getHttpServer())
@@ -62,9 +68,13 @@ describe('Product user flow (e2e)', () => {
 
     await request(app.getHttpServer())
       .put(`/products/${creation.body.id}`)
-      .send({ ...payload, price: '59.90', description: 'Updated E2E product' })
+      .send({ price: '59.90' })
       .expect(200)
-      .expect((response) => expect(response.body.price).toBe('59.9'));
+      .expect((response) => {
+        expect(response.body.price).toBe('59.9');
+        expect(response.body.description).toBe(payload.description);
+        expect(response.body.quantity).toBe(7);
+      });
 
     await request(app.getHttpServer())
       .get('/products?limit=1')
@@ -76,9 +86,27 @@ describe('Product user flow (e2e)', () => {
 
     await request(app.getHttpServer())
       .delete(`/products/${creation.body.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(200);
+    await request(app.getHttpServer())
+      .delete(`/products/${creation.body.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(404);
     await request(app.getHttpServer())
       .get(`/products/${creation.body.id}`)
       .expect(404);
+  });
+
+  it('rejects a price outside Decimal(18,2) before querying Prisma', async () => {
+    await request(app.getHttpServer())
+      .post('/products')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        title: `${title} overflow`,
+        price: '10000000000000000.00',
+        description: 'Invalid price',
+        quantity: 1,
+      })
+      .expect(400);
   });
 });

@@ -56,6 +56,8 @@ export const AnyNull = runtime.AnyNull;
 export const ModelName = {
   Product: 'Product',
   User: 'User',
+  Cart: 'Cart',
+  CartItem: 'CartItem',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -79,9 +81,10 @@ export const ProductScalarFieldEnum = {
   title: 'title',
   price: 'price',
   description: 'description',
+  quantity: 'quantity',
+  userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  userId: 'userId',
 } as const;
 
 export type ProductScalarFieldEnum =
@@ -92,12 +95,36 @@ export const UserScalarFieldEnum = {
   username: 'username',
   password: 'password',
   email: 'email',
+  role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
 } as const;
 
 export type UserScalarFieldEnum =
   (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
+
+export const CartScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  price: 'price',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type CartScalarFieldEnum =
+  (typeof CartScalarFieldEnum)[keyof typeof CartScalarFieldEnum];
+
+export const CartItemScalarFieldEnum = {
+  id: 'id',
+  cartId: 'cartId',
+  productId: 'productId',
+  quantity: 'quantity',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type CartItemScalarFieldEnum =
+  (typeof CartItemScalarFieldEnum)[keyof typeof CartItemScalarFieldEnum];
 
 export const SortOrder = {
   asc: 'asc',

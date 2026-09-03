@@ -34,7 +34,12 @@ describe('Product module database integration', () => {
 
   it('persists and reads the Product-to-User relationship', async () => {
     const created = await productService.createProduct(
-      { title, price: '99.95', description: 'Database integration' },
+      {
+        title,
+        price: '99.95',
+        description: 'Database integration',
+        quantity: 6,
+      },
       userId,
     );
     const stored = await prisma.product.findUniqueOrThrow({
@@ -45,5 +50,6 @@ describe('Product module database integration', () => {
     expect(stored.userId).toBe(userId);
     expect(stored.user?.username).toBe(username);
     expect(stored.price.toString()).toBe('99.95');
+    expect(stored.quantity).toBe(6);
   });
 });

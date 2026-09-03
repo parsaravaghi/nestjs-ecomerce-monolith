@@ -17,6 +17,9 @@ import { ProductService } from './product.service';
 import { User } from 'src/common/decorators/user.decorator';
 import { type AuthUser } from '../auth/auth-user.interface';
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { UserRole } from '../../generated/prisma/client';
 
 @Controller()
 export class ProductController {
@@ -41,17 +44,19 @@ export class ProductController {
   }
 
   @Put('products/:productId')
-  update(
+  updateProduct(
     @Param('productId', new ParseUUIDPipe({ version: '4' })) productId: string,
     @Body() dto: ProductUpdateDto,
   ) {
-    return this.productService.update(productId, dto);
+    return this.productService.updateProduct(productId, dto);
   }
 
   @Delete('products/:productId')
-  remove(
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUPERUSER)
+  deleteProduct(
     @Param('productId', new ParseUUIDPipe({ version: '4' })) productId: string,
   ) {
-    return this.productService.remove(productId);
+    return this.productService.deleteProduct(productId);
   }
 }

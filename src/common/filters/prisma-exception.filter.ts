@@ -27,6 +27,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
     status: HttpStatus;
     message: string;
   } {
+    console.log(exception);
     if (exception.code === 'P2002') {
       const fields = this.uniqueFields(exception);
 
@@ -61,6 +62,13 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       return {
         status: HttpStatus.NOT_FOUND,
         message: 'User not found',
+      };
+    }
+
+    if (exception.code === 'P2020') {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        message: 'A numeric value is outside the supported range',
       };
     }
 
@@ -112,6 +120,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
     const names: Partial<Record<HttpStatus, string>> = {
       [HttpStatus.CONFLICT]: 'Conflict',
       [HttpStatus.NOT_FOUND]: 'Not Found',
+      [HttpStatus.BAD_REQUEST]: 'Bad Request',
       [HttpStatus.INTERNAL_SERVER_ERROR]: 'Internal Server Error',
     };
 

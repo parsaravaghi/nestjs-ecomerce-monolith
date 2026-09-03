@@ -29,6 +29,7 @@ export class ProductService {
         title: dto.title,
         price: new Prisma.Decimal(dto.price),
         description: dto.description,
+        quantity: dto.quantity,
         userId: userId,
       },
     });
@@ -68,19 +69,45 @@ export class ProductService {
     return product;
   }
 
-  update(productId: string, dto: ProductUpdateDto) {
-    return this.prisma.product.update({
+  async updateProduct(
+    productId: string,
+    dto: ProductUpdateDto,
+  ): Promise<Product> {
+    const result = await this.prisma.product.updateMany({
       where: { id: productId },
       data: {
         title: dto.title,
-        price: new Prisma.Decimal(dto.price),
+        price: dto.price ? new Prisma.Decimal(dto.price) : undefined,
         description: dto.description,
+        quantity: dto.quantity,
       },
     });
+
+    if (result.count === 0) {
+      throw new NotFoundException('Product not found');
+    }
+
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    return product;
   }
 
-  remove(productId: string) {
-    return this.prisma.product.delete({ where: { id: productId } });
+  async deleteProduct(productId: string): Promise<{ deleted: true }> {
+    const result = await this.prisma.product.deleteMany({
+      where: { id: productId },
+    });
+
+    if (result.count === 0) {
+      throw new NotFoundException('Product not found');
+    }
+
+    return { deleted: true };
   }
 
   private encodeCursor(id: string): string {

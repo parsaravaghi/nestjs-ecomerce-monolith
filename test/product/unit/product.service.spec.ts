@@ -9,8 +9,8 @@ describe('ProductService', () => {
       create: jest.fn(),
       findMany: jest.fn(),
       findUnique: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
+      updateMany: jest.fn(),
+      deleteMany: jest.fn(),
     },
   };
   const service = new ProductService(prisma as unknown as PrismaService);
@@ -21,7 +21,12 @@ describe('ProductService', () => {
     prisma.product.create.mockResolvedValue({ id: 'product-id' });
 
     await service.createProduct(
-      { title: 'Keyboard', price: '12.50', description: 'Mechanical' },
+      {
+        title: 'Keyboard',
+        price: '12.50',
+        description: 'Mechanical',
+        quantity: 8,
+      },
       'user-id',
     );
 
@@ -29,9 +34,53 @@ describe('ProductService', () => {
       data: expect.objectContaining({
         title: 'Keyboard',
         description: 'Mechanical',
+        quantity: 8,
         userId: 'user-id',
       }),
     });
+  });
+
+  it('updates product inventory quantity', async () => {
+    prisma.product.updateMany.mockResolvedValue({ count: 1 });
+    prisma.product.findUnique.mockResolvedValue({
+      id: 'product-id',
+      quantity: 4,
+    });
+
+    await service.updateProduct('product-id', { quantity: 4 });
+
+    expect(prisma.product.updateMany).toHaveBeenCalledWith({
+      where: { id: 'product-id' },
+      data: {
+        title: undefined,
+        price: undefined,
+        description: undefined,
+        quantity: 4,
+      },
+    });
+  });
+
+  it('returns 404 when update affects no product', async () => {
+    prisma.product.updateMany.mockResolvedValue({ count: 0 });
+
+    await expect(
+      service.updateProduct('missing-product', { title: 'Updated' }),
+    ).rejects.toBeInstanceOf(NotFoundException);
+  });
+
+  it('deletes by product ID and returns 404 when no product is affected', async () => {
+    prisma.product.deleteMany.mockResolvedValueOnce({ count: 1 });
+    await expect(service.deleteProduct('product-id')).resolves.toEqual({
+      deleted: true,
+    });
+    expect(prisma.product.deleteMany).toHaveBeenCalledWith({
+      where: { id: 'product-id' },
+    });
+
+    prisma.product.deleteMany.mockResolvedValueOnce({ count: 0 });
+    await expect(
+      service.deleteProduct('missing-product'),
+    ).rejects.toBeInstanceOf(NotFoundException);
   });
 
   it('fetches limit plus one and returns an opaque next cursor', async () => {

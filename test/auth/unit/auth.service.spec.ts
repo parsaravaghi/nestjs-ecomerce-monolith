@@ -1,9 +1,10 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { jest } from '@jest/globals';
 import * as bcrypt from 'bcrypt';
 import { AuthService } from '../../../src/modules/auth/auth.service';
 import { PrismaService } from '../../../src/database/prisma.service';
+import { UserRole } from '../../../src/generated/prisma/client';
 
 describe('AuthService', () => {
   const prisma = {
@@ -72,5 +73,34 @@ describe('AuthService', () => {
     await expect(
       service.login({ username: 'missing', password: 'Password123' }),
     ).rejects.toEqual(new UnauthorizedException('Invalid credentials'));
+  });
+
+  it('finds an authorization user by ID without selecting the password', async () => {
+    const user = {
+      id: 'user-id',
+      username: 'tester',
+      email: 'tester@example.com',
+      role: UserRole.ADMIN,
+    };
+    prisma.user.findUnique.mockResolvedValue(user);
+
+    await expect(service.findUserById('user-id')).resolves.toEqual(user);
+    expect(prisma.user.findUnique).toHaveBeenCalledWith({
+      where: { id: 'user-id' },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        role: true,
+      },
+    });
+  });
+
+  it('throws the project not-found response when an authorization user is missing', async () => {
+    prisma.user.findUnique.mockResolvedValue(null);
+
+    await expect(service.findUserById('missing-id')).rejects.toEqual(
+      new NotFoundException('User not found'),
+    );
   });
 });

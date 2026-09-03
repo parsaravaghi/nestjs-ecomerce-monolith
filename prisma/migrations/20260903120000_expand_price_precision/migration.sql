@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Product" ALTER COLUMN "price" SET DATA TYPE DECIMAL(18,2);
+
+-- AlterTable
+ALTER TABLE "Cart" ALTER COLUMN "price" SET DATA TYPE DECIMAL(18,2);

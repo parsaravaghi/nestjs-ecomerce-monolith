@@ -7,15 +7,23 @@ datasource db {
   provider = "postgresql"
 }
 
+enum UserRole {
+  ADMIN
+  USER
+  SUPERUSER
+}
+
 model Product {
-  id          String   @id @default(uuid()) @db.Uuid
-  title       String   @unique
-  price       Decimal  @db.Decimal(8, 2)
+  id          String     @id @default(uuid()) @db.Uuid
+  title       String     @unique
+  price       Decimal    @db.Decimal(18, 2)
   description String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  userId      String?  @db.Uuid
-  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  quantity    Int        @default(0)
+  userId      String?    @db.Uuid
+  user        User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  cartItems   CartItem[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   @@index([userId])
 }
@@ -25,7 +33,33 @@ model User {
   username  String    @unique
   password  String
   email     String    @unique
+  role      UserRole  @default(USER)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   products  Product[]
+  cart      Cart?
+}
+
+model Cart {
+  id        String     @id @default(uuid()) @db.Uuid
+  userId    String     @unique @db.Uuid
+  price     Decimal    @default(0) @db.Decimal(18, 2)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(uuid()) @db.Uuid
+  cartId    String   @db.Uuid
+  productId String   @db.Uuid
+  quantity  Int      @default(1)
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cartId, productId])
+  @@index([productId])
 }
