@@ -1,4 +1,19 @@
 services:
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    env_file:
+      - .env
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   redis:
     image: redis:8-alpine
     ports:
@@ -15,3 +30,6 @@ services:
        target: /dev/shm
        tmpfs:
          size: 134217728 # 128*2^20 bytes = 128Mb
+
+volumes:
+  rabbitmq_data:

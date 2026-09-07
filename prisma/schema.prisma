@@ -13,17 +13,39 @@ enum UserRole {
   SUPERUSER
 }
 
+enum OrderStatus {
+  PAYMENT_PENDING
+  PENDING
+  SHIPPING
+  DELIVERED
+}
+
+enum PaymentStatus {
+  QUEUED
+  FAILED
+  SUCCESSED
+}
+
+enum PaymentEventStatus {
+  CREATED
+  PENDING
+  FAILED
+  SUCCESS
+  RETRYING
+}
+
 model Product {
-  id          String     @id @default(uuid()) @db.Uuid
-  title       String     @unique
-  price       Decimal    @db.Decimal(18, 2)
+  id          String      @id @default(uuid()) @db.Uuid
+  title       String      @unique
+  price       Decimal     @db.Decimal(18, 2)
   description String
-  quantity    Int        @default(0)
-  userId      String?    @db.Uuid
-  user        User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  quantity    Int         @default(0)
+  userId      String?     @db.Uuid
+  user        User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   cartItems   CartItem[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   @@index([userId])
 }
@@ -34,10 +56,13 @@ model User {
   password  String
   email     String    @unique
   role      UserRole  @default(USER)
+  balance   Decimal   @default(0) @db.Decimal(12, 2)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   products  Product[]
   cart      Cart?
+  orders    Order[]
+  payments  Payment[]
 }
 
 model Cart {
@@ -55,6 +80,7 @@ model CartItem {
   cartId    String   @db.Uuid
   productId String   @db.Uuid
   quantity  Int      @default(1)
+  price     Decimal  @db.Decimal(18, 2)
   cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
   product   Product  @relation(fields: [productId], references: [id])
   createdAt DateTime @default(now())
@@ -62,4 +88,59 @@ model CartItem {
 
   @@unique([cartId, productId])
   @@index([productId])
+}
+
+model Order {
+  id        String      @id @default(uuid()) @db.Uuid
+  userId    String      @db.Uuid
+  user      User        @relation(fields: [userId], references: [id])
+  status    OrderStatus @default(PAYMENT_PENDING)
+  items     OrderItem[]
+  payments  Payment[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id        String   @id @default(uuid()) @db.Uuid
+  orderId   String   @db.Uuid
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String   @db.Uuid
+  product   Product  @relation(fields: [productId], references: [id])
+  price     Decimal  @db.Decimal(18, 2)
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+}
+
+model Payment {
+  id          String         @id @default(uuid()) @db.Uuid
+  status      PaymentStatus  @default(QUEUED)
+  amount      Decimal        @db.Decimal(18, 2)
+  userId      String         @db.Uuid
+  user        User           @relation(fields: [userId], references: [id])
+  orderId     String         @db.Uuid
+  order       Order          @relation(fields: [orderId], references: [id])
+  attempts    Int            @default(0)
+  maxAttempts Int            @default(4)
+  events      PaymentEvent[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([userId])
+  @@index([orderId])
+}
+
+model PaymentEvent {
+  id        String             @id @default(uuid()) @db.Uuid
+  paymentId String             @db.Uuid
+  payment   Payment            @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  status    PaymentEventStatus
+  createdAt DateTime           @default(now())
+
+  @@index([paymentId])
 }

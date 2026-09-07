@@ -10,6 +10,9 @@ import { PrismaModule } from './database/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProductModule } from './modules/product/product.module';
 import { CartModule } from './modules/cart/cart.module';
+import { PaymentModule } from './modules/payment/payment.module';
+import { PaymentExceptionFilter } from './common/filters/payment-exception.filter';
+import { OrderModule } from './modules/order/order.module';
 
 @Module({
   imports: [
@@ -43,12 +46,18 @@ import { CartModule } from './modules/cart/cart.module';
     AuthModule,
     ProductModule,
     CartModule,
+    PaymentModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [
     {
       provide: APP_FILTER,
       useClass: PrismaExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: PaymentExceptionFilter,
     },
   ],
 })
